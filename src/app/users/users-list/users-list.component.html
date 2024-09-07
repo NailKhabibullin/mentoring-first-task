@@ -1,0 +1,15 @@
+<div class="users-list-container">
+    <h1>Users List</h1>
+    <div class="users-grid">
+      <app-user-card
+        *ngFor="let user of users"
+        [user]="user"
+        (deleteUser)="onDeleteUser($event)">
+      </app-user-card>
+    </div>
+    <p *ngIf="users.length === 0">No users available.</p>
+    <div class="add-users">
+      <button mat-button class="add-users__button" (click)="openDialog()">Add user</button>
+    </div>
+</div>
+  
