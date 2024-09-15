@@ -11,7 +11,7 @@ export class UsersApiService {
 
   constructor(private http: HttpClient) {}
 
-  public getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/users`);
+  public getUsers(): Observable<User[]> { // объявил метод который примет данные и сделает их потоком observable с типом данных объекта user  
+    return this.http.get<User[]>(`${this.apiUrl}/users`); // get запрос с ожидаемым типом данных объекта user по адресу
   }
 }

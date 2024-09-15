@@ -1,10 +1,17 @@
 <div>
-    <form>
-        <input type="text">
-        <input type="text">
-        <input type="text">
-        <input type="text">
-        <input type="text">
-        <button class="delete-user-button" type="submit" (click)="onCreate()">Create</button>
-    </form>
+  <form [formGroup]="createEditForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput id="name" formControlName="name" [value]="data.user.name">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput id="email" formControlName="email" [value]="data.user.email">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Phone</mat-label>
+      <input matInput id="phone" formControlName="phone" [value]="data.user.phone">
+    </mat-form-field>
+    <button mat-button [mat-dialog-close]="createEditForm.value" type="submit">Save</button>
+  </form>
 </div>

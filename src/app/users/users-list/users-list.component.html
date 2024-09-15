@@ -2,14 +2,15 @@
     <h1>Users List</h1>
     <div class="users-grid">
       <app-user-card
-        *ngFor="let user of users"
+        *ngFor="let user of users$ | async"
         [user]="user"
-        (deleteUser)="onDeleteUser($event)">
+        (deleteUser)="onDeleteUser(user.id)"
+        (editUser)="onEditUser(user)">
       </app-user-card>
     </div>
-    <p *ngIf="users.length === 0">No users available.</p>
+    <p *ngIf="!users$">No users available.</p>
     <div class="add-users">
-      <button mat-button class="add-users__button" (click)="openDialog()">Add user</button>
+      <button mat-button class="add-users__button" (click)="openCreateEditDialog()">Add user</button>
     </div>
 </div>
   
