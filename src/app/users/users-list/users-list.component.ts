@@ -75,23 +75,24 @@ export class UsersListComponent implements OnInit{
     const dialogRef = this.dialog.open(CreateEditUserComponent, {
       data: {
         user: user ? user : { name: '', email: '', phone: '' },
-        // isEdit: false
-        // isEdit
       }
     });
-    dialogRef.afterClosed().subscribe(result => {                         // подписываюсь на observable с данными, кот. отправляются после закрытия окна afterClosed
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const users = JSON.parse(localStorage.getItem('users') || '[]');    // получаем данные из локал сторадж в переменную users
-        if (user){
+        const users = JSON.parse(localStorage.getItem('users') || '[]');         // Получаем данные из LocalStorage
+        let updatedUsers: User[] = [];
+  
+        if (user) {
           const index = users.findIndex((u: User) => u.id === user.id);
           if (index !== -1) {
-          users[index] = result; // Обновляем данные пользователя
+            users[index] = result;                                              // обновляем данные пользователя
+            updatedUsers = [...users];                                          // создаем новый массив с обновленными пользователями
           }
-        } else {
-          users.push(result);                                                 // добавляем в переменную (массив) users данные result, полученные при закрытии окна
+        } else {                                                                 // если добавляем нового пользователя
+          updatedUsers = [...users, result];                                     // создаем новый массив с добавленным пользователем
         }
-        this.usersService.updateUsers(users);                               // обновляем данные в usersService
-        localStorage.setItem('users', JSON.stringify(users));               // обновляем данные в локал сторадж
+        this.usersService.updateUsers(updatedUsers);                            // обновляем данные в usersService
+        localStorage.setItem('users', JSON.stringify(updatedUsers));            // обновляем данные в LocalStorage
       }
     });
   }
