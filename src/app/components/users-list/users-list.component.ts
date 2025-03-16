@@ -1,18 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { User } from '../../interfaces/users';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { UsersService } from '../../services/users-service.service';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
@@ -22,6 +14,7 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
   standalone: true,
   imports: [
     NgFor,
+    NgIf,
     UserCardComponent,
     MatFormFieldModule,
     MatInputModule,
