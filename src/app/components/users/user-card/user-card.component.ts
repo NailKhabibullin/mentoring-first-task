@@ -1,6 +1,6 @@
 import { Component, EventEmitter } from '@angular/core';
 import { Input, Output } from '@angular/core';
-import { User } from '../../interfaces/users';
+import { User } from '../../../interfaces/users';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';  
 

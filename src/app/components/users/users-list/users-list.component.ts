@@ -1,13 +1,16 @@
 import { Component, inject } from '@angular/core';
-import { User } from '../../interfaces/users';
-import { NgFor, NgIf } from '@angular/common';
-import { UsersService } from '../../services/users-service.service';
+import { User } from '../../../interfaces/users'; 
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.component';
+import { Store } from '@ngrx/store';
+import { selectUsers } from '../../../state/users/users.selectors';
+import { createUser, deleteUser, editUser, loadUsers } from '../../../state/users/users.action';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users-list',
@@ -15,38 +18,43 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
   imports: [
     NgFor,
     NgIf,
+    AsyncPipe,
     UserCardComponent,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule],
+    MatButtonModule
+  ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersListComponent {
 
-  readonly usersService = inject(UsersService);
+  private store = inject(Store);
   readonly dialog = inject(MatDialog);
-  users: User[] = [];
+  users$ = this.store.select(selectUsers);
 
   ngOnInit(): void {
-    this.usersService.getUsers().subscribe(
-      (users) => {
-        this.users = users
-      }
-    )
+    this.users$.pipe(
+      first(users => users.length === 0)
+    ).subscribe(() => {
+      this.store.dispatch(loadUsers());
+    });
   }
 
   openDialog(user?: User): void {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {data: {user}});
 
     dialogRef.afterClosed().subscribe(result => {
-      result ? (result.id !== null ? this.usersService.editUser(result) : this.usersService.createUser(result)) : null;
+      if (result) {
+        result.id !== null 
+          ? this.store.dispatch(editUser({ user: result })) 
+          : this.store.dispatch(createUser({ user: result }));
+      }
     });
   }
 
   deleteUser(id:number): void {
-    this.usersService.deleteUser(id)
+    this.store.dispatch(deleteUser({ id }))
   }
 
   editUser(user:User):void {
