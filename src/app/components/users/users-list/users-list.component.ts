@@ -10,7 +10,8 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
 import { Store } from '@ngrx/store';
 import { selectUsers } from '../../../state/users/users.selectors';
 import { createUser, deleteUser, editUser, loadUsers } from '../../../state/users/users.action';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-users-list',
@@ -32,23 +33,30 @@ export class UsersListComponent {
   private store = inject(Store);
   readonly dialog = inject(MatDialog);
   users$ = this.store.select(selectUsers);
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.users$.pipe(
-      first(users => users.length === 0)
+      first(users => users.length === 0),
+      takeUntil(this.destroy$)
     ).subscribe(() => {
       this.store.dispatch(loadUsers());
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   openDialog(user?: User): void {
     const dialogRef = this.dialog.open(CreateEditUserComponent, {data: {user}});
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        result.id !== null 
-          ? this.store.dispatch(editUser({ user: result })) 
-          : this.store.dispatch(createUser({ user: result }));
+    dialogRef.afterClosed().subscribe(user => {
+      if (user) {
+        user.id !== null 
+          ? this.store.dispatch(editUser({ user })) 
+          : this.store.dispatch(createUser({ user }));
       }
     });
   }
