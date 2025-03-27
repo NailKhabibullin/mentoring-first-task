@@ -20,8 +20,7 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
     MatInputModule,
     MatButtonModule],
   templateUrl: './users-list.component.html',
-  styleUrl: './users-list.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: './users-list.component.scss'
 })
 export class UsersListComponent {
 
