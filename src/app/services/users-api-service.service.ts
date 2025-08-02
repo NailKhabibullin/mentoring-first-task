@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
 import { User } from '../interfaces/users';
 
 @Injectable({
@@ -10,9 +9,19 @@ export class UsersApiService {
 
   private readonly apiService = inject(HttpClient)
   private readonly apiUrl = "https://jsonplaceholder.typicode.com/"
-  private readonly resourse = "users"
+  private readonly resource = "users"
+  private readonly users = signal<User[]>([])
+  readonly users$ = this.users.asReadonly();
 
-  getUsers(): Observable<User[]>{
-    return this.apiService.get<User[]>(this.apiUrl + this.resourse);
+  getUsers(): void {
+    this.apiService.get<User[]>(`${this.apiUrl}${this.resource}`)
+      .subscribe({
+        next: data => this.users.set(data),
+        error: err => {
+          console.error('Error loading users', err);
+          this.users.set([]);
+        }
+      }
+    );
   }
 } 

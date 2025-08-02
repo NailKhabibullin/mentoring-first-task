@@ -13,18 +13,9 @@ export class LocalStorageService {
   }
 
   addUser(key: string, user: User): void {
-    const existingUsers = localStorage.getItem(key);
-    let usersArray: User[] = [];
-    
-    if (existingUsers) {
-      usersArray = JSON.parse(existingUsers);
-      if (!Array.isArray(usersArray)) {
-        usersArray = [];
-      }
-    }
-
-    usersArray.push(user);
-    localStorage.setItem(key, JSON.stringify(usersArray));
+    const users = this.getUsers(key);
+    users.push(user);
+    this.setUsers(key, users);
   }
 
   getUsers(users: string): User[] {

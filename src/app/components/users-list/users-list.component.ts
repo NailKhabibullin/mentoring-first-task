@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { User } from '../../interfaces/users';
 import { NgFor, NgIf } from '@angular/common';
 import { UsersService } from '../../services/users-service.service';
@@ -23,17 +23,14 @@ import { CreateEditUserComponent } from '../create-edit-user/create-edit-user.co
   styleUrl: './users-list.component.scss'
 })
 export class UsersListComponent {
-
   readonly usersService = inject(UsersService);
   readonly dialog = inject(MatDialog);
-  users: User[] = [];
+  readonly users = this.usersService.users$;
 
-  ngOnInit(): void {
-    this.usersService.getUsers().subscribe(
-      (users) => {
-        this.users = users
-      }
-    )
+  constructor() {
+    effect(() => {
+      console.log('USERS:', this.users());
+    });
   }
 
   openDialog(user?: User): void {
